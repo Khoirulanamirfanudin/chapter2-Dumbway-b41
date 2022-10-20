@@ -4,8 +4,6 @@ function addBlog (evet){
     event.preventDefault()
 
     let title = document.getElementById("input-name").value;
-    let startDate = document.getElementById("start-date").value;
-    let endDate = document.getElementById("end-date").value;
     let content = document.getElementById("input-message").value;
     // let technologies = document.getElementById("input-technologies");
     let image = document.getElementById("input-image").files[0];
@@ -15,8 +13,6 @@ function addBlog (evet){
 
     let blog = {
         title,
-        startDate,
-        endDate,
         content,
         // technologies,
         image,
@@ -45,7 +41,7 @@ function renderBlog() {
             </div>
             <div class="card-content">
                 <h1>
-                    <a href="blog-detail.html" target="_blank">
+                    <a href="/cardDetail/0" target="_blank">
                         ${dataBlog[index].title}
                     </a>
                 </h1>
@@ -53,15 +49,7 @@ function renderBlog() {
                 ${getFullTime(dataBlog[index].postAt)}| ${dataBlog[index].author}
                 </div>
 
-                <div class="start-date">
-                    <label for="">start date :</label>
-                    ${dataBlog[index].startDate}
-                </div>
-                <div class="end-date">
-                    <label for="">end date:</label>
-                    ${dataBlog[index].endDate}
-                </div>
-
+                
                 <div class="input-message">
                     ${dataBlog[index].content}
                 </div>

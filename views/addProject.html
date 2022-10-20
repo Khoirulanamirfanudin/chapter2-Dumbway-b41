@@ -2,7 +2,7 @@
     <head>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" />
-        <link rel="stylesheet" href="addProject.css">
+        <link rel="stylesheet" href="public/css/addProject.css">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" />
     </head>
 
@@ -10,22 +10,21 @@
         <div>
             <nav class="navbar navbar-expand-lg navbar-light bg-light d-flex justify-content-between" >
                 <ul class="navbar-nav justify-content-lg-start" id="navbar-item-list">
-                  <a class="navbar-brand" href="#">
-                    <img src="./assets/logoo.png" width="40" height="40" class="d-inline-block align-center" alt="">
+                  <a class="navbar-brand" href="/">
+                    <img src="./public/img/logoo.png" width="40" height="40" class="d-inline-block align-center" alt="">
                     
                   </a> 
                   <li class="nav-item active">
-                    <a class="nav-link" href="index.html">Home <span class="sr-only"></span></a>
+                    <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="addProject.html">Add Project</a>
+                    <a class="nav-link" href="/addProject">Add Project</a>
                   </li>
                 </ul>
     
-                <button type="button" class="btn btn-secondary justify-content-end"> <a href="contact.html" style="text-decoration: none; color:white">Contact Me</a></button>
+                <button type="button" class="btn btn-secondary justify-content-end"> <a href="/contact" style="text-decoration: none; color:white">Contact Me</a></button>
             </nav>
         </div>
-
         <div class="addProject">
             <form>
                 <h1>ADD MY PROJECT</h1>
@@ -33,7 +32,7 @@
                     <label for="input-name">Project Name</label>
                     <input type="text" id="input-name">
                 </div>
-                <div class="date">
+                <!-- <div class="date">
                     <div>
                     <label for="input-start-date">Start Date</label> 
                     <input type="date" id="start-date"  >
@@ -42,10 +41,10 @@
                         <label for="input-end-date">End Date</label> 
                         <input type="date" id="end-date" >
                     </div>
-                </div>
+                </div> -->
                 
                 <div>
-                    <label for="input-message">Your Message</label>
+                    <label for="input-message">Content</label>
                     <textarea name="" id="input-message" cols="60" rows="5"></textarea>
                 </div>
                 <!-- <div class="technologies">
@@ -65,16 +64,15 @@
             </form>
         </div>
 
-        <h1>My Project</h1>
         <div id="contents" class="card-list" >
-            <!-- <div class="card">
+            <div class="card">
              <div class="card-image">
-                <img src="./profil.jpg" alt="">
+                <img src="./public/img/profil.jpg" alt="">
             </div>
             <div class="card-content"> 
-                < <div class="input-name">
+                 <div class="input-name">
                     <h3>
-                        <a href="cardDetail.html" style="color:black ;" target="_blank">
+                        <a href="/card-detail/0" style="color:black ;" target="_blank">
                             Web Progammer merupakan profesi benefit di masa depan
                         </a>
                     </h3>
@@ -83,28 +81,13 @@
                     12 juil 2022 22:30 WIB | Ichsan Nur Jamal
                 </div>
 
-                <div class="start-date">
-                    <label for="">start date :</label>
-                    <input type="text" id="start-date">
-                </div>
-                <div class="end-date">
-                    <label for="">end date:</label>
-                    <input type="text" id="end-date">
-                </div>
+               
 
                 <div class="input-message">
                     <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Repellendus nam provident porro. Recusandae ab veniam dolores? Eum, similique natus delectus debitis incidunt animi fugit magnam, nulla atque quos at id.</p>
                 </div>
 
-                <div class="input-technologi">
-                    <label for="technologies">Technologis</label>
-                    
-
-                </div>
-
-                <div class="os">
-                    <i class="fa brands fa-google-play"></i>
-                </div>
+            
 
                 <div class="btn-group">
                     <button class="btn-edit"> Edit Post</button>
@@ -112,12 +95,12 @@
                 </div>
             </div> 
             </div>
-        </div> -->
+        </div>
 
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     </body>
 
-    <script src="blog.js"></script>
+    <script src="public/js/blog.js"></script>
 </html>
