@@ -25,17 +25,16 @@
             </nav>
         </div>
 
-        <!-- {{.Id}} -->
         <div class="card">
             <div class="card-content">
                 <div>
                     <h1>
             
-                            {{.Title}}
+                            {{.Card.Title}}
                         
                 </div>
                 <div class="card-detail-content">
-                    12 juil 2022 22:30 WIB | Ichsan Nur Jamal
+                    {{.Card.Post_date}}| {{.Card.Author}}
                 </div>
 
                 <div class="card-image">
@@ -43,7 +42,7 @@
                 </div>
 
                 <div class="card-desc">
-                    <p>{{.Content}}</p>
+                    <p>{{.Card.Content}}</p>
                 </div>
 
             </div>   

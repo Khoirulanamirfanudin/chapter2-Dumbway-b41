@@ -1,4 +1,4 @@
-module day-7
+module day-8
 
 go 1.17
 

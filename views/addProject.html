@@ -25,45 +25,11 @@
                 <button type="button" class="btn btn-secondary justify-content-end"> <a href="/contact" style="text-decoration: none; color:white">Contact Me</a></button>
             </nav>
         </div>
-        <div class="addProject">
-            <form>
-                <h1>ADD MY PROJECT</h1>
-                <div>
-                    <label for="input-name">Project Name</label>
-                    <input type="text" id="input-name">
-                </div>
-                <!-- <div class="date">
-                    <div>
-                    <label for="input-start-date">Start Date</label> 
-                    <input type="date" id="start-date"  >
-                    </div>
-                    <div>
-                        <label for="input-end-date">End Date</label> 
-                        <input type="date" id="end-date" >
-                    </div>
-                </div> -->
-                
-                <div>
-                    <label for="input-message">Content</label>
-                    <textarea name="" id="input-message" cols="60" rows="5"></textarea>
-                </div>
-                <!-- <div class="technologies">
-                    <label for="input-technologies">Technologies</label><br>
-                    <input type="checkbox" nama="teknologi 1"  value="Node JS"> Node JS
-                    <input type="checkbox" nama="teknologi 2"  value="React JS"> React JS <br>  
-                    <input type="checkbox" nama="teknologi 3"  value="Next JS"> Next JS
-                    <input type="checkbox" nama="teknologi 4"  value="python"> Python
-                </div> -->
-                <div>
-                    <label for="input-image">Upload Image</label>
-                    <input type="file" id="input-image">
-                </div>
-                <div class="tombol">
-                    <button type="button" onclick="addBlog(event); this.reset(); return false"> Submit</button>
-                </div>
-            </form>
-        </div>
 
+        <div class="addProject">
+            <a href="/form-card" style="float: right; margin-top:10px; border-radius:20px; padding: 5px 15px; background-color:orangered">Add Project</a>
+        </div>
+        {{range $index, $data := .Cards}}
         <div id="contents" class="card-list" >
             <div class="card">
              <div class="card-image">
@@ -72,29 +38,30 @@
             <div class="card-content"> 
                  <div class="input-name">
                     <h3>
-                        <a href="/card-detail/0" style="color:black ;" target="_blank">
-                            Web Progammer merupakan profesi benefit di masa depan
+                        <a href="/card-detail/{{$index}}" style="color:black ;" target="_blank">
+                            {{$data.Title}}
                         </a>
                     </h3>
                 </div>
                 <div class="card-detail-content">
-                    12 juil 2022 22:30 WIB | Ichsan Nur Jamal
+                    {{$data.Post_date}} | {{$data.Author}}
                 </div>
 
                
 
                 <div class="input-message">
-                    <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Repellendus nam provident porro. Recusandae ab veniam dolores? Eum, similique natus delectus debitis incidunt animi fugit magnam, nulla atque quos at id.</p>
+                    <p>{{$data.Content}}</p>
                 </div>
 
             
 
                 <div class="btn-group">
-                    <button class="btn-edit"> Edit Post</button>
-                    <button class="btn-post"> Post Blog</button>
+                    <button class="btn-edit"> Edit</button>
+                    <button class="btn-post"> <a href="/delete/{{$index}}">Delete</a></button>
                 </div>
             </div> 
             </div>
+            {{end}}
         </div>
 
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
@@ -102,5 +69,5 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     </body>
 
-    <script src="public/js/blog.js"></script>
+    <!-- <script src="public/js/blog.js"></script> -->
 </html>
