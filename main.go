@@ -1,6 +1,8 @@
 package main
 
 import (
+	"context"
+	"day-9/connection"
 	"fmt"
 	"html/template"
 	"log"
@@ -16,23 +18,27 @@ var Data = map[string]interface{}{
 }
 
 type Card struct {
-	Title     string
-	Post_date string
-	Author    string
-	Content   string
+	Id          int
+	Title       string
+	Post_date   time.Time
+	Format_date string
+	Author      string
+	Content     string
 }
 
 var Cards = []Card{
-	{
-		Title:     "Terserah Kamu mau isi apa",
-		Post_date: "21 October 2022 22:20 WIB",
-		Author:    "Khoirul Anam Irfanudin",
-		Content:   "Isi apapun yang kamu suka",
-	},
+	// {
+	// 	Title:     "Terserah Kamu mau isi apa",
+	// 	Post_date: "21 October 2022 22:20 WIB",
+	// 	Author:    "Khoirul Anam Irfanudin",
+	// 	Content:   "Isi apapun yang kamu suka",
+	// },
 }
 
 func main() {
 	route := mux.NewRouter()
+
+	connection.DatabaseConnect()
 
 	// route path folder untuk public
 	route.PathPrefix("/public/").Handler(http.StripPrefix("/public/", http.FileServer(http.Dir("./public"))))
@@ -95,8 +101,30 @@ func addProject(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	rows, _ := connection.Conn.Query(context.Background(), "SELECT id, title, content FROM tb_blog")
+
+	var result []Card
+
+	for rows.Next() {
+		var each = Card{}
+
+		var err = rows.Scan(&each.Id, &each.Title, &each.Content)
+
+		if err != nil {
+			fmt.Println(err.Error())
+			return
+		}
+
+		each.Author = "Khoirul Anam Irfanudin"
+		// each.Format_date = each.Post_date.Format("3 Maret 2008")
+
+		result = append(result, each)
+	}
+
+	fmt.Println(result)
+
 	respData := map[string]interface{}{
-		"Cards": Cards,
+		"Cards": result,
 	}
 
 	w.WriteHeader(http.StatusOK)
@@ -165,10 +193,9 @@ func addCard(w http.ResponseWriter, r *http.Request) {
 	var content = r.PostForm.Get("inputContent")
 
 	var newCard = Card{
-		Title:     title,
-		Content:   content,
-		Author:    "Khoirul Anam Irfanudin",
-		Post_date: time.Now().String(),
+		Title:   title,
+		Content: content,
+		Author:  "Khoirul Anam Irfanudin",
 	}
 
 	Cards = append(Cards, newCard)
@@ -181,8 +208,8 @@ func delete(w http.ResponseWriter, r *http.Request) {
 	index, _ := strconv.Atoi(mux.Vars(r)["index"])
 	fmt.Println(index)
 
-	Cards = append(Cards[:index], Cards[index+1:]...)
-	fmt.Println(Cards)
+	// Cards = append(Cards[:index], Cards[index+1:]...)
+	// fmt.Println(Cards)
 
 	http.Redirect(w, r, "/addProject", http.StatusFound)
 }
