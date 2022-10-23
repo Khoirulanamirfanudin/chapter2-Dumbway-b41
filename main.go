@@ -167,7 +167,7 @@ func addCard(w http.ResponseWriter, r *http.Request) {
 	var newCard = Card{
 		Title:     title,
 		Content:   content,
-		Author:    "Khoirul Anam Irfanudin",
+		Author:    "Khoirul Anam",
 		Post_date: time.Now().String(),
 	}
 
