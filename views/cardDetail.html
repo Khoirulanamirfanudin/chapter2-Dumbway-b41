@@ -30,11 +30,22 @@
                 <div>
                     <h1>
             
-                            {{.Card.Title}}
-                        
+                            {{.Card.Name}}
+                    </h1>
                 </div>
                 <div class="card-detail-content">
-                    {{.Card.Post_date}}| {{.Card.Author}}
+                 {{.Card.Author}}
+                </div>
+
+                <div class="date">
+                    <div>
+                        <label for="input-start-date">Start Date</label> 
+                        {{.Card.Start_date}}
+                    </div>
+                    <div>
+                        <label for="input-end-date">End Date</label> 
+                        {{$.Card.End_date}}
+                    </div>
                 </div>
 
                 <div class="card-image">
@@ -42,7 +53,7 @@
                 </div>
 
                 <div class="card-desc">
-                    <p>{{.Card.Content}}</p>
+                    <p>{{.Card.Description}}</p>
                 </div>
 
             </div>   

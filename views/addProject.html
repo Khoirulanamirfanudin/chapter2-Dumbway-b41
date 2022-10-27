@@ -38,26 +38,47 @@
             <div class="card-content"> 
                  <div class="input-name">
                     <h3>
-                        <a href="/card-detail/{{$index}}" style="color:black ;" target="_blank">
-                            {{$data.Title}}
+                        <a href="/card-detail/{{$data.Id}}" style="color:black ;" target="_blank">
+                            {{$data.Name}}
                         </a>
                     </h3>
                 </div>
                 <div class="card-detail-content">
-                    {{$data.Post_date}} | {{$data.Author}}
+                    {{$data.Author}}
+                </div>
+
+
+                <div class="date">
+                    <div>
+                        <label for="input-start-date">Start Date : </label> 
+                        {{$data.Start_date}}
+                    </div>
+                    <div>
+                        <label for="input-end-date">End Date : </label> 
+                        {{$data.End_date}}
+                    </div>
+                </div>
+
+
+                <div class="technologies" id="technologies">
+                    <label for="input-technologies">Technologies</label><br>
+                    <input type="checkbox" nama="teknologi 1"  value="Node JS"> Node JS
+                    <input type="checkbox" nama="teknologi 2"  value="React JS"> React JS <br>  
+                    <input type="checkbox" nama="teknologi 3"  value="Next JS"> Next JS
+                    <input type="checkbox" nama="teknologi 4"  value="python"> Python
                 </div>
 
                
 
                 <div class="input-message">
-                    <p>{{$data.Content}}</p>
+                    <p>{{$data.Description}}</p>
                 </div>
 
             
 
                 <div class="btn-group">
-                    <button class="btn-edit"> Edit</button>
-                    <button class="btn-post"> <a href="/delete/{{$index}}">Delete</a></button>
+                    <button class="btn-edit"><a href="/edit/{{$data.Id}}">Edit</a></button>
+                    <button class="btn-post"> <a href="/delete/{{$data.Id}}">Delete</a></button>
                 </div>
             </div> 
             </div>

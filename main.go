@@ -2,13 +2,12 @@ package main
 
 import (
 	"context"
-	"day-9/connection"
+	"day-10/connection"
 	"fmt"
 	"html/template"
 	"log"
 	"net/http"
 	"strconv"
-	"time"
 
 	"github.com/gorilla/mux"
 )
@@ -18,12 +17,13 @@ var Data = map[string]interface{}{
 }
 
 type Card struct {
-	Id          int
-	Title       string
-	Post_date   time.Time
-	Format_date string
+	Id         int
+	Name       string
+	Start_date string
+	End_date   string
+	// Technologies string
 	Author      string
-	Content     string
+	Description string
 }
 
 var Cards = []Card{
@@ -48,10 +48,11 @@ func main() {
 	route.HandleFunc("/", home).Methods("GET")
 	route.HandleFunc("/contact", contact).Methods("GET")
 	route.HandleFunc("/addProject", addProject).Methods("GET")
-	route.HandleFunc("/card-detail/{index}", cardDetail).Methods("GET")
+	route.HandleFunc("/card-detail/{id}", cardDetail).Methods("GET")
 	route.HandleFunc("/form-card", formAddCard).Methods("GET")
 	route.HandleFunc("/add-card", addCard).Methods("POST")
-	route.HandleFunc("/delete/{index}", delete).Methods("GET")
+	route.HandleFunc("/edit/{id}", edit).Methods("GET")
+	route.HandleFunc("/delete/{id}", delete).Methods("GET")
 
 	fmt.Println("Server running on port 5000")
 	http.ListenAndServe("localhost:5000", route)
@@ -101,14 +102,14 @@ func addProject(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	rows, _ := connection.Conn.Query(context.Background(), "SELECT id, title, content FROM tb_blog")
+	rows, _ := connection.Conn.Query(context.Background(), "SELECT id, name, start_date, end_date, description FROM tb_projects")
 
 	var result []Card
 
 	for rows.Next() {
 		var each = Card{}
 
-		var err = rows.Scan(&each.Id, &each.Title, &each.Content)
+		var err = rows.Scan(&each.Id, &each.Name, &each.Start_date, &each.End_date, &each.Description)
 
 		if err != nil {
 			fmt.Println(err.Error())
@@ -141,20 +142,30 @@ func cardDetail(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	id, _ := strconv.Atoi(mux.Vars(r)["id"])
+
 	var CardDetail = Card{}
 
-	index, _ := strconv.Atoi(mux.Vars(r)["index"])
-
-	for i, data := range Cards {
-		if index == i {
-			CardDetail = Card{
-				Title:     data.Title,
-				Content:   data.Content,
-				Post_date: data.Post_date,
-				Author:    data.Author,
-			}
-		}
+	err = connection.Conn.QueryRow(context.Background(), "SELECT id, name, start_date, end_date, description FROM tb_projects WHERE id=$1", id).Scan(
+		&CardDetail.Id, &CardDetail.Name, &CardDetail.Start_date, &CardDetail.End_date, &CardDetail.Description,
+	)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte("message : " + err.Error()))
+		return
 	}
+
+	// for i, data := range Cards {
+	// 	if index == i {
+	// 		CardDetail = Card{
+	// 			Name:        data.Name,
+	// 			Description: data.Description,
+	// 			Start_date:  data.Start_date,
+	// 			End_date:    data.End_date,
+	// 			Author:      data.Author,
+	// 		}
+	// 	}
+	// }
 
 	data := map[string]interface{}{
 		"Card": CardDetail,
@@ -186,30 +197,65 @@ func addCard(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 
-	fmt.Println("Title : " + r.PostForm.Get("inputTitle")) // value berdasarkan dari tag input name
-	fmt.Println("Content : " + r.PostForm.Get("inputContent"))
+	fmt.Println("Name : " + r.PostForm.Get("inputName")) // value berdasarkan dari tag input name
+	fmt.Println("Description : " + r.PostForm.Get("inputDescriptiom"))
+	fmt.Println("Start_date : " + r.PostForm.Get("inputStartDate"))
+	fmt.Println("End_date : " + r.PostForm.Get("inputEndDate"))
+	// fmt.Println("Technologies : " + r.PostForm.Get("inputTechnologies"))
 
-	var title = r.PostForm.Get("inputTitle")
-	var content = r.PostForm.Get("inputContent")
+	var name = r.PostForm.Get("inputName")
+	var description = r.PostForm.Get("inputDescription")
+	var start_date = r.PostForm.Get("inputStartDate")
+	var end_date = r.PostForm.Get("inputEndDate")
+	// var technologies = r.PostForm.Get("inputTechnologies")
 
-	var newCard = Card{
-		Title:   title,
-		Content: content,
-		Author:  "Khoirul Anam Irfanudin",
+	// var newCard = Card{
+	// 	Name:        name,
+	// 	Description: description,
+	// 	Start_date:  start_date,
+	// 	End_date:    end_date,
+	// 	Author:      "Khoirul Anam Irfanudin",
+	// }
+
+	// Cards = append(Cards, newCard)
+	// // fmt.Println(Cards)
+
+	_, err = connection.Conn.Exec(context.Background(), "INSERT INTO tb_projects(name, start_date, end_date, description) VALUES ($1, $2, $3, $4) ", name, start_date, end_date, description)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte("message : " + err.Error()))
+		return
 	}
-
-	Cards = append(Cards, newCard)
-	// fmt.Println(Cards)
 
 	http.Redirect(w, r, "/addProject", http.StatusMovedPermanently)
 }
 
+func edit(w http.ResponseWriter, r *http.Request) {
+	id, _ := strconv.Atoi(mux.Vars(r)["id"])
+	fmt.Println(id)
+
+	_, err := connection.Conn.Exec(context.Background(), "DELETE FROM tb_projects WHERE id=$1", id)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte("message : " + err.Error()))
+	}
+
+	http.Redirect(w, r, "/form-card", http.StatusFound)
+
+}
+
 func delete(w http.ResponseWriter, r *http.Request) {
-	index, _ := strconv.Atoi(mux.Vars(r)["index"])
-	fmt.Println(index)
+	id, _ := strconv.Atoi(mux.Vars(r)["id"])
+	fmt.Println(id)
 
 	// Cards = append(Cards[:index], Cards[index+1:]...)
 	// fmt.Println(Cards)
+
+	_, err := connection.Conn.Exec(context.Background(), "DELETE FROM tb_projects WHERE id=$1", id)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte("message : " + err.Error()))
+	}
 
 	http.Redirect(w, r, "/addProject", http.StatusFound)
 }
