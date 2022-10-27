@@ -7,28 +7,39 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" />
     <link rel="stylesheet" href="public/css/index.css">
-    <title>Post Blog</title>
+    <link rel="stylesheet" href="public/css/nav.css">
+    <title>{{.Title}}</title>
 </head>
 <body>
-    <div>
-        <nav class="navbar navbar-expand-lg navbar-light bg-light d-flex justify-content-between" >
-            <ul class="navbar-nav justify-content-lg-start" id="navbar-item-list">
-              <a class="navbar-brand" href="/">
-                <img src="./public/img/logoo.png" width="40" height="40" class="d-inline-block align-center" alt="">
-                
-              </a> 
-              <li class="nav-item active">
-                <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="/addProject">Add Project</a>
-              </li>
+    <nav>
+        <div class="nav-left">
+            <ul>
+                <li><a href="/"><img src="../public/img/logoo.png" /></a></li>
+                <li><a href="/">Home</a></li>
+                <li><a href="/addProject">addProject</a></li>
             </ul>
+        </div>
+        <div>
+            <div class="nav-right">
+                {{if .IsLogin}}
+                <a href="" class="nav-link">Hello, {{.UserName}}</a>
+                <a href="/logout" class="nav-link list-active">Logout</a>
+                {{else}}
+                <a href="/form-register" class="nav-link">Register</a>
+                <a href="/form-login" class="nav-link">Login</a>
+                {{end}}
+                <a href="/contact" class="contact">Contact</a>
+            </div>
+        </div>
+    </nav>
 
-            <button type="button" class="btn btn-secondary justify-content-end"> <a href="/contact" style="text-decoration: none; color:white">Contact Me</a></button>
-        </nav>
+    {{if .FlashData}}
+    <div class="alert alert-success" role="alert">
+        <strong>{{ .FlashData}}</strong>
+
     </div>
-    
+    {{end}}
+
     <div class="profil">
       <div class="card-left">
           <h1>Hi Welcome to my hut</h1>
@@ -74,5 +85,5 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 </body>
 
-<script src="blog.js"></script>
+<!-- <script src="blog.js"></script> -->
 </html>

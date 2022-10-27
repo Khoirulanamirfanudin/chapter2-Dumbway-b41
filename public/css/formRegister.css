@@ -5,23 +5,24 @@
 
 body{
     margin: 0;
-}
-
-
-
-.addProject{
     background-color: aliceblue;
+    
 }
 
-form{
-    width: 400px;
-    margin:  auto;
-    padding: 10px;
-    background-color: aliceblue;
+.container-fluid {
+    height: 92vh;
 }
+
+.container-form {
+    width: 500px;
+}
+
+
 
 form div {
     margin: 15px;
+    margin-top: 10px;
+    
 }
 
 label {
@@ -29,7 +30,7 @@ label {
     font-size: 20px;
 }
 
-form input, textarea{
+form input{
     width: 100%;
     font-size: 20px;
     font-weight: 400;
@@ -39,6 +40,10 @@ form input, textarea{
     background: #f4f3f3;
     border: 1px solid #c4c4c4;
     border-radius: 8px;
+} 
+
+h1{
+    text-align: center;
 }
 
 button {
@@ -56,13 +61,9 @@ button {
 button:hover {
     background-color: green;
 }
-h1{
+
+h3{
     text-align: center;
 }
 
 
-.tombol{
-    display: flex;
-    width: 100%;
-    justify-content: end;
-}

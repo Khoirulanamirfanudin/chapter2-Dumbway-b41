@@ -4,27 +4,31 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" />
         <link rel="stylesheet" href="public/css/addProject.css">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="../public/css/nav.css">
     </head>
 
     <body>
-        <div>
-            <nav class="navbar navbar-expand-lg navbar-light bg-light d-flex justify-content-between" >
-                <ul class="navbar-nav justify-content-lg-start" id="navbar-item-list">
-                  <a class="navbar-brand" href="/">
-                    <img src="./public/img/logoo.png" width="40" height="40" class="d-inline-block align-center" alt="">
-                    
-                  </a> 
-                  <li class="nav-item active">
-                    <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="/addProject">Add Project</a>
-                  </li>
+        <nav>
+            <div class="nav-left">
+                <ul>
+                    <li><a href="/"><img src="../public/img/logoo.png" /></a></li>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/addProject">addProject</a></li>
                 </ul>
-    
-                <button type="button" class="btn btn-secondary justify-content-end"> <a href="/contact" style="text-decoration: none; color:white">Contact Me</a></button>
-            </nav>
-        </div>
+            </div>
+            <div>
+                <div class="nav-right">
+                    {{if .Data.IsLogin}}
+                    <a href="" class="nav-link">Hello, {{.Data.UserName}}</a>
+                    <a href="/logout" class="nav-link list-active">Logout</a>
+                    {{else}}
+                    <a href="/form-register" class="nav-link">Register</a>
+                    <a href="/form-login" class="nav-link">Login</a>
+                    {{end}}
+                    <a href="/contact" class="contact">Contact</a>
+                </div>
+            </div>
+        </nav>
 
         <div class="addProject">
             <a href="/form-card" style="float: right; margin-top:10px; border-radius:20px; padding: 5px 15px; background-color:orangered">Add Project</a>
@@ -38,26 +42,47 @@
             <div class="card-content"> 
                  <div class="input-name">
                     <h3>
-                        <a href="/card-detail/{{$index}}" style="color:black ;" target="_blank">
-                            {{$data.Title}}
+                        <a href="/card-detail/{{$data.Id}}" style="color:black ;" target="_blank">
+                            {{$data.Name}}
                         </a>
                     </h3>
                 </div>
                 <div class="card-detail-content">
-                    {{$data.Post_date}} | {{$data.Author}}
+                    {{$data.Author}}
+                </div>
+
+
+                <div class="date">
+                    <div>
+                        <label for="input-start-date">Start Date : </label> 
+                        {{$data.Start_date}}
+                    </div>
+                    <div>
+                        <label for="input-end-date">End Date : </label> 
+                        {{$data.End_date}}
+                    </div>
+                </div>
+
+
+                <div class="technologies" id="technologies">
+                    <label for="input-technologies">Technologies</label><br>
+                    <input type="checkbox" nama="teknologi 1"  value="Node JS"> Node JS
+                    <input type="checkbox" nama="teknologi 2"  value="React JS"> React JS <br>  
+                    <input type="checkbox" nama="teknologi 3"  value="Next JS"> Next JS
+                    <input type="checkbox" nama="teknologi 4"  value="python"> Python
                 </div>
 
                
 
                 <div class="input-message">
-                    <p>{{$data.Content}}</p>
+                    <p>{{$data.Description}}</p>
                 </div>
 
             
 
                 <div class="btn-group">
-                    <button class="btn-edit"> Edit</button>
-                    <button class="btn-post"> <a href="/delete/{{$index}}">Delete</a></button>
+                    <button class="btn-edit"><a href="/edit/{{$data.Id}}">Edit</a></button>
+                    <button class="btn-post"> <a href="/delete/{{$data.Id}}">Delete</a></button>
                 </div>
             </div> 
             </div>
