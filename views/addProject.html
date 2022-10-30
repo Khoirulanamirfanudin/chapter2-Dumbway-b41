@@ -38,26 +38,55 @@
             <div class="card-content"> 
                  <div class="input-name">
                     <h3>
-                        <a href="/card-detail/{{$index}}" style="color:black ;" target="_blank">
-                            {{$data.Title}}
+                        <a href="/card-detail/{{$data.Id}}" style="color:black ;" target="_blank">
+                            {{$data.Name}}
                         </a>
                     </h3>
                 </div>
                 <div class="card-detail-content">
-                    {{$data.Post_date}} | {{$data.Author}}
+                    {{$data.Author}}
                 </div>
 
-               
+
+                <div class="date" name="inputDate">
+                    <div>
+                        <label for="input-start-date">Start Date : </label> 
+                        {{$data.Format_Sdate}}
+                    </div>
+                    <div>
+                        <label for="input-end-date">End Date : </label> 
+                        {{$data.Format_Edate}}
+                    </div>
+                </div>
+
+                <div>
+                    Duration : {{$data.Duration}}
+                </div>
 
                 <div class="input-message">
-                    <p>{{$data.Content}}</p>
+                    <p>{{$data.Description}}</p>
+                </div>
+
+                <div>
+                    {{if eq (index $data.Technologies 0) "checked"}}
+                    <img src="../public/img/node.jpg" alt="nodejs" style="height: 30px; width:30px ;" >
+                    {{end}}
+                    {{if eq (index $data.Technologies 1) "checked"}}
+                    <img src="../public/img/reactjs.jpg" alt="reactjs" style="height: 30px; width:30px ;" >
+                    {{end}}
+                    {{if eq (index $data.Technologies 2) "checked"}}
+                    <img src="../public/img/nextjs.jpg" alt="nextjs"  style="height: 30px; width:30px" >
+                    {{end}}
+                    {{if eq (index $data.Technologies 3) "checked"}}
+                    <img src="../public/img/phyton.jpg" alt="typescript" style="height: 30px; width:30px" >
+                    {{end}}
                 </div>
 
             
 
                 <div class="btn-group">
                     <button class="btn-edit"> Edit</button>
-                    <button class="btn-post"> <a href="/delete/{{$index}}">Delete</a></button>
+                    <button class="btn-post"> <a href="/delete/{{$data.Id}}">Delete</a></button>
                 </div>
             </div> 
             </div>

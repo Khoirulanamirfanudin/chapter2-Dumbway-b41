@@ -30,19 +30,51 @@
                 <div>
                     <h1>
             
-                            {{.Card.Title}}
-                        
+                            {{.Card.Name}}
+                    </h1>
                 </div>
                 <div class="card-detail-content">
-                    {{.Card.Post_date}}| {{.Card.Author}}
+                 {{.Card.Author}}
+                </div>
+
+                <div class="date">
+                    <div>
+                        <label for="input-start-date">Start Date :</label> 
+                        {{.Card.Format_Sdate}}
+                    </div>
+                    <div>
+                        <label for="input-end-date">End Date :</label> 
+                        {{.Card.Format_Edate}}
+                    </div>
+                    
+                </div>
+
+                <div>
+                    Duration : {{.Card.Duration}}
                 </div>
 
                 <div class="card-image">
                     <img src="/public/img/profil.jpg" alt="">
+
                 </div>
 
                 <div class="card-desc">
-                    <p>{{.Card.Content}}</p>
+                    <p>{{.Card.Description}}</p>
+                </div>
+
+                <div class="technologies">
+                    {{if eq (index .Card.Technologies 0) "checked"}}
+                    <img src="../public/img/node.jpg" alt="nodejs" style="height: 30px; width:30px ;" >
+                    {{end}}
+                    {{if eq (index .Card.Technologies 1) "checked"}}
+                    <img src="../public/img/reactjs.jpg" alt="reactjs" style="height: 30px; width:30px ;" >
+                    {{end}}
+                    {{if eq (index .Card.Technologies 2) "checked"}}
+                    <img src="../public/img/nextjs.jpg" alt="nextjs"  style="height: 30px; width:30px" >
+                    {{end}}
+                    {{if eq (index .Card.Technologies 3) "checked"}}
+                    <img src="../public/img/phyton.jpg" alt="typescript" style="height: 30px; width:30px" >
+                    {{end}}
                 </div>
 
             </div>   

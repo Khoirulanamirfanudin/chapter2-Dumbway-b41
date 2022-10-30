@@ -18,12 +18,16 @@ var Data = map[string]interface{}{
 }
 
 type Card struct {
-	Id          int
-	Title       string
-	Post_date   time.Time
-	Format_date string
-	Author      string
-	Content     string
+	Id           int
+	Name         string
+	Start_date   time.Time
+	End_date     time.Time
+	Duration     string
+	Technologies []string
+	Author       string
+	Description  string
+	Format_Sdate string
+	Format_Edate string
 }
 
 var Cards = []Card{
@@ -48,10 +52,10 @@ func main() {
 	route.HandleFunc("/", home).Methods("GET")
 	route.HandleFunc("/contact", contact).Methods("GET")
 	route.HandleFunc("/addProject", addProject).Methods("GET")
-	route.HandleFunc("/card-detail/{index}", cardDetail).Methods("GET")
+	route.HandleFunc("/card-detail/{id}", cardDetail).Methods("GET")
 	route.HandleFunc("/form-card", formAddCard).Methods("GET")
 	route.HandleFunc("/add-card", addCard).Methods("POST")
-	route.HandleFunc("/delete/{index}", delete).Methods("GET")
+	route.HandleFunc("/delete/{id}", delete).Methods("GET")
 
 	fmt.Println("Server running on port 5000")
 	http.ListenAndServe("localhost:5000", route)
@@ -101,14 +105,14 @@ func addProject(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	rows, _ := connection.Conn.Query(context.Background(), "SELECT id, title, content FROM tb_blog")
+	rows, _ := connection.Conn.Query(context.Background(), "SELECT id, name, start_date, end_date, technologies, description FROM tb_projects")
 
 	var result []Card
 
 	for rows.Next() {
 		var each = Card{}
 
-		var err = rows.Scan(&each.Id, &each.Title, &each.Content)
+		var err = rows.Scan(&each.Id, &each.Name, &each.Start_date, &each.End_date, &each.Technologies, &each.Description)
 
 		if err != nil {
 			fmt.Println(err.Error())
@@ -116,7 +120,9 @@ func addProject(w http.ResponseWriter, r *http.Request) {
 		}
 
 		each.Author = "Khoirul Anam Irfanudin"
-		// each.Format_date = each.Post_date.Format("3 Maret 2008")
+		each.Format_Sdate = each.Start_date.Format("2 January 2006")
+		each.Format_Edate = each.End_date.Format("2 January 2006")
+		each.Duration = GetDuration(each.Start_date, each.End_date)
 
 		result = append(result, each)
 	}
@@ -141,20 +147,37 @@ func cardDetail(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	id, _ := strconv.Atoi(mux.Vars(r)["id"])
+
 	var CardDetail = Card{}
 
-	index, _ := strconv.Atoi(mux.Vars(r)["index"])
-
-	for i, data := range Cards {
-		if index == i {
-			CardDetail = Card{
-				Title:     data.Title,
-				Content:   data.Content,
-				Post_date: data.Post_date,
-				Author:    data.Author,
-			}
-		}
+	err = connection.Conn.QueryRow(context.Background(), "SELECT id, name, start_date, end_date, technologies, description FROM tb_projects WHERE id=$1", id).Scan(
+		&CardDetail.Id, &CardDetail.Name, &CardDetail.Start_date, &CardDetail.End_date, &CardDetail.Technologies, &CardDetail.Description,
+	)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte("message : " + err.Error()))
+		return
 	}
+
+	CardDetail.Format_Sdate = CardDetail.Start_date.Format("2 January 2006")
+	CardDetail.Format_Edate = CardDetail.End_date.Format("2 January 2006")
+	CardDetail.Duration = GetDuration(CardDetail.Start_date, CardDetail.End_date)
+
+	// index, _ := strconv.Atoi(mux.Vars(r)["index"])
+
+	// for i, data := range Cards {
+	// 	if index == i {
+	// 		CardDetail = Card{
+	// 			Name:         data.Name,
+	// 			Description:  data.Description,
+	// 			Start_date:   data.Start_date,
+	// 			End_date:     data.End_date,
+	// 			Technologies: data.Technologies,
+	// 			Author:       data.Author,
+	// 		}
+	// 	}
+	// }
 
 	data := map[string]interface{}{
 		"Card": CardDetail,
@@ -186,30 +209,72 @@ func addCard(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 
-	fmt.Println("Title : " + r.PostForm.Get("inputTitle")) // value berdasarkan dari tag input name
-	fmt.Println("Content : " + r.PostForm.Get("inputContent"))
+	fmt.Println("Name : " + r.PostForm.Get("inputName")) // value berdasarkan dari tag input name
+	fmt.Println("Description : " + r.PostForm.Get("inputDescription"))
+	fmt.Println("Start_date : " + r.PostForm.Get("inputStartDate"))
+	fmt.Println("End_date : " + r.PostForm.Get("inputEndDate"))
 
-	var title = r.PostForm.Get("inputTitle")
-	var content = r.PostForm.Get("inputContent")
+	var name = r.PostForm.Get("inputName")
+	var description = r.PostForm.Get("inputDescription")
+	var start_date = r.PostForm.Get("inputStartDate")
+	var end_date = r.PostForm.Get("inputEndDate")
+	var technologies = []string{r.PostForm.Get("nodejs"), r.PostForm.Get("reactjs"), r.PostForm.Get("nextjs"), r.PostForm.Get("phyton")}
 
-	var newCard = Card{
-		Title:   title,
-		Content: content,
-		Author:  "Khoirul Anam Irfanudin",
-	}
+	// var newCard = Card{
+	// 	Name:        name,
+	// 	Description: description,
+	// 	Start_date:  start_date,
+	// 	End_date:    end_date,
+	// 	Author:      "Khoirul Anam Irfanudin",
+	// }
 
-	Cards = append(Cards, newCard)
+	// Cards = append(Cards, newCard)
 	// fmt.Println(Cards)
+
+	_, err = connection.Conn.Exec(context.Background(), "INSERT INTO tb_projects(name, start_date, end_date, technologies, description) VALUES ($1, $2, $3, $4, $5) ", name, start_date, end_date, technologies, description)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte("message : " + err.Error()))
+		return
+	}
 
 	http.Redirect(w, r, "/addProject", http.StatusMovedPermanently)
 }
 
 func delete(w http.ResponseWriter, r *http.Request) {
-	index, _ := strconv.Atoi(mux.Vars(r)["index"])
-	fmt.Println(index)
+	id, _ := strconv.Atoi(mux.Vars(r)["id"])
+	fmt.Println(id)
 
 	// Cards = append(Cards[:index], Cards[index+1:]...)
 	// fmt.Println(Cards)
 
+	_, err := connection.Conn.Exec(context.Background(), "DELETE FROM tb_projects WHERE id=$1", id)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte("message : " + err.Error()))
+	}
+
 	http.Redirect(w, r, "/addProject", http.StatusFound)
+}
+
+func GetDuration(startDate time.Time, endDate time.Time) string {
+
+	margin := endDate.Sub(startDate).Hours() / 24
+	var duration string
+
+	if margin >= 30 {
+		if (margin / 30) == 1 {
+			duration = "1 Month"
+		} else {
+			duration = strconv.Itoa(int(margin/30)) + " Months"
+		}
+	} else {
+		if margin <= 1 {
+			duration = "1 Day"
+		} else {
+			duration = strconv.Itoa(int(margin)) + " Days"
+		}
+	}
+
+	return duration
 }
