@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/gorilla/mux"
 	"github.com/gorilla/sessions"
@@ -27,14 +28,17 @@ var Data = MetaData{
 }
 
 type Card struct {
-	Id         int
-	Name       string
-	Start_date string
-	End_date   string
-	// Technologies string
-	Author      string
-	Description string
-	IsLogin     bool
+	Id           int
+	Name         string
+	Start_date   time.Time
+	End_date     time.Time
+	Duration     string
+	Technologies []string
+	Author       string
+	Description  string
+	Format_Sdate string
+	Format_Edate string
+	IsLogin      bool
 }
 
 type User struct {
@@ -188,14 +192,14 @@ func addProject(w http.ResponseWriter, r *http.Request) {
 		Data.UserName = session.Values["Name"].(string)
 	}
 
-	rows, _ := connection.Conn.Query(context.Background(), "SELECT id, name, start_date, end_date, description FROM tb_projects")
+	rows, _ := connection.Conn.Query(context.Background(), "SELECT id, name, start_date, end_date, technologies, description FROM tb_projects")
 
 	var result []Card
 
 	for rows.Next() {
 		var each = Card{}
 
-		var err = rows.Scan(&each.Id, &each.Name, &each.Start_date, &each.End_date, &each.Description)
+		var err = rows.Scan(&each.Id, &each.Name, &each.Start_date, &each.End_date, &each.Technologies, &each.Description)
 
 		if err != nil {
 			fmt.Println(err.Error())
@@ -203,7 +207,9 @@ func addProject(w http.ResponseWriter, r *http.Request) {
 		}
 
 		each.Author = "Khoirul Anam Irfanudin"
-		// each.Format_date = each.Post_date.Format("3 Maret 2008")
+		each.Format_Sdate = each.Start_date.Format("2 January 2006")
+		each.Format_Edate = each.End_date.Format("2 January 2006")
+		each.Duration = GetDuration(each.Start_date, each.End_date)
 
 		if session.Values["IsLogin"] != true {
 			each.IsLogin = false
@@ -251,14 +257,19 @@ func cardDetail(w http.ResponseWriter, r *http.Request) {
 
 	var CardDetail = Card{}
 
-	err = connection.Conn.QueryRow(context.Background(), "SELECT id, name, start_date, end_date, description FROM tb_projects WHERE id=$1", id).Scan(
-		&CardDetail.Id, &CardDetail.Name, &CardDetail.Start_date, &CardDetail.End_date, &CardDetail.Description,
+	err = connection.Conn.QueryRow(context.Background(), "SELECT id, name, start_date, end_date, technologies, description FROM tb_projects WHERE id=$1", id).Scan(
+		&CardDetail.Id, &CardDetail.Name, &CardDetail.Start_date, &CardDetail.End_date, &CardDetail.Technologies, &CardDetail.Description,
 	)
+
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte("message : " + err.Error()))
 		return
 	}
+
+	CardDetail.Format_Sdate = CardDetail.Start_date.Format("2 January 2006")
+	CardDetail.Format_Edate = CardDetail.End_date.Format("2 January 2006")
+	CardDetail.Duration = GetDuration(CardDetail.Start_date, CardDetail.End_date)
 
 	if session.Values["IsLogin"] != true {
 		Data.IsLogin = false
@@ -347,7 +358,7 @@ func addCard(w http.ResponseWriter, r *http.Request) {
 	var description = r.PostForm.Get("inputDescription")
 	var start_date = r.PostForm.Get("inputStartDate")
 	var end_date = r.PostForm.Get("inputEndDate")
-	// var technologies = r.PostForm.Get("inputTechnologies")
+	var technologies = []string{r.PostForm.Get("nodejs"), r.PostForm.Get("reactjs"), r.PostForm.Get("nextjs"), r.PostForm.Get("phyton")}
 
 	// var newCard = Card{
 	// 	Name:        name,
@@ -360,7 +371,7 @@ func addCard(w http.ResponseWriter, r *http.Request) {
 	// Cards = append(Cards, newCard)
 	// // fmt.Println(Cards)
 
-	_, err = connection.Conn.Exec(context.Background(), "INSERT INTO tb_projects(name, start_date, end_date, description) VALUES ($1, $2, $3, $4) ", name, start_date, end_date, description)
+	_, err = connection.Conn.Exec(context.Background(), "INSERT INTO tb_projects(name, start_date, end_date, technologies, description) VALUES ($1, $2, $3, $4, $5) ", name, start_date, end_date, technologies, description)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte("message : " + err.Error()))
@@ -512,4 +523,26 @@ func logout(w http.ResponseWriter, r *http.Request) {
 	session.Save(r, w)
 
 	http.Redirect(w, r, "/", http.StatusSeeOther)
+}
+
+func GetDuration(startDate time.Time, endDate time.Time) string {
+
+	margin := endDate.Sub(startDate).Hours() / 24
+	var duration string
+
+	if margin >= 30 {
+		if (margin / 30) == 1 {
+			duration = "1 Month"
+		} else {
+			duration = strconv.Itoa(int(margin/30)) + " Months"
+		}
+	} else {
+		if margin <= 1 {
+			duration = "1 Day"
+		} else {
+			duration = strconv.Itoa(int(margin)) + " Days"
+		}
+	}
+
+	return duration
 }
