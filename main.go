@@ -2,7 +2,8 @@ package main
 
 import (
 	"context"
-	"day-11/connection"
+	"day-12/connection"
+	"day-12/middleware"
 	"fmt"
 	"html/template"
 	"log"
@@ -10,9 +11,10 @@ import (
 	"strconv"
 	"strings"
 
+	"golang.org/x/crypto/bcrypt"
+
 	"github.com/gorilla/mux"
 	"github.com/gorilla/sessions"
-	"golang.org/x/crypto/bcrypt"
 )
 
 type MetaData struct {
@@ -34,6 +36,7 @@ type Card struct {
 	// Technologies string
 	Author      string
 	Description string
+	Image       string
 	IsLogin     bool
 }
 
@@ -60,6 +63,7 @@ func main() {
 
 	// route path folder untuk public
 	route.PathPrefix("/public/").Handler(http.StripPrefix("/public/", http.FileServer(http.Dir("./public"))))
+	route.PathPrefix("/uploads/").Handler(http.StripPrefix("/uploads/", http.FileServer(http.Dir("./uploads/"))))
 
 	//routing
 	route.HandleFunc("/hello", helloWorld).Methods("GET")
@@ -68,8 +72,9 @@ func main() {
 	route.HandleFunc("/addProject", addProject).Methods("GET")
 	route.HandleFunc("/card-detail/{id}", cardDetail).Methods("GET")
 	route.HandleFunc("/form-card", formAddCard).Methods("GET")
-	route.HandleFunc("/add-card", addCard).Methods("POST")
+	// route.HandleFunc("/add-card", addCard).Methods("POST")
 	route.HandleFunc("/edit/{id}", edit).Methods("GET")
+	route.HandleFunc("/addProject", middleware.UploadFile(addCard)).Methods("POST")
 	route.HandleFunc("/delete/{id}", delete).Methods("GET")
 
 	route.HandleFunc("/form-register", formRegister).Methods("GET")
@@ -188,14 +193,14 @@ func addProject(w http.ResponseWriter, r *http.Request) {
 		Data.UserName = session.Values["Name"].(string)
 	}
 
-	rows, _ := connection.Conn.Query(context.Background(), "SELECT id, name, start_date, end_date, description FROM tb_projects")
+	rows, _ := connection.Conn.Query(context.Background(), "SELECT id, name, start_date, end_date, description, image FROM tb_projects")
 
 	var result []Card
 
 	for rows.Next() {
 		var each = Card{}
 
-		var err = rows.Scan(&each.Id, &each.Name, &each.Start_date, &each.End_date, &each.Description)
+		var err = rows.Scan(&each.Id, &each.Name, &each.Start_date, &each.End_date, &each.Description, &each.Image)
 
 		if err != nil {
 			fmt.Println(err.Error())
@@ -251,8 +256,8 @@ func cardDetail(w http.ResponseWriter, r *http.Request) {
 
 	var CardDetail = Card{}
 
-	err = connection.Conn.QueryRow(context.Background(), "SELECT id, name, start_date, end_date, description FROM tb_projects WHERE id=$1", id).Scan(
-		&CardDetail.Id, &CardDetail.Name, &CardDetail.Start_date, &CardDetail.End_date, &CardDetail.Description,
+	err = connection.Conn.QueryRow(context.Background(), "SELECT id, name, start_date, end_date, description, image FROM tb_projects WHERE id=$1", id).Scan(
+		&CardDetail.Id, &CardDetail.Name, &CardDetail.Start_date, &CardDetail.End_date, &CardDetail.Description, &CardDetail.Image,
 	)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -341,12 +346,14 @@ func addCard(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Description : " + r.PostForm.Get("inputDescriptiom"))
 	fmt.Println("Start_date : " + r.PostForm.Get("inputStartDate"))
 	fmt.Println("End_date : " + r.PostForm.Get("inputEndDate"))
+	fmt.Println("Image : " + r.PostForm.Get("inputImage"))
 	// fmt.Println("Technologies : " + r.PostForm.Get("inputTechnologies"))
 
 	var name = r.PostForm.Get("inputName")
 	var description = r.PostForm.Get("inputDescription")
 	var start_date = r.PostForm.Get("inputStartDate")
 	var end_date = r.PostForm.Get("inputEndDate")
+	// var image = r.PostForm.Get("inputImage")
 	// var technologies = r.PostForm.Get("inputTechnologies")
 
 	// var newCard = Card{
@@ -360,7 +367,13 @@ func addCard(w http.ResponseWriter, r *http.Request) {
 	// Cards = append(Cards, newCard)
 	// // fmt.Println(Cards)
 
-	_, err = connection.Conn.Exec(context.Background(), "INSERT INTO tb_projects(name, start_date, end_date, description) VALUES ($1, $2, $3, $4) ", name, start_date, end_date, description)
+	// var store = sessions.NewCookieStore([]byte("SESSION_ID"))
+	// session, _ := store.Get(r, "SESSION_ID")
+
+	dataContex := r.Context().Value("dataFile")
+	image := dataContex.(string)
+
+	_, err = connection.Conn.Exec(context.Background(), "INSERT INTO tb_projects(name, start_date, end_date, description, image) VALUES ($1, $2, $3, $4, $5) ", name, start_date, end_date, description, image)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte("message : " + err.Error()))

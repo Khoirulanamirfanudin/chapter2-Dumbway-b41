@@ -30,7 +30,7 @@
         </nav>
         
         <div class="addProject">
-            <form action="/add-card" method="POST" >
+            <form action="/addProject" method="POST" enctype="multipart/form-data">
                 <h1>ADD MY PROJECT</h1>
                 <div class="title">
                     <label for="input-title">Project Name</label>
@@ -60,7 +60,7 @@
                 </div>
                 <div class="image">
                     <label for="input-image">Upload Image</label>
-                    <input type="file" id="input-image">
+                    <input type="file" id="input-image" name="inputImage">
                 </div>
                 <div class="tombol">
                     <button>Add Project</button>

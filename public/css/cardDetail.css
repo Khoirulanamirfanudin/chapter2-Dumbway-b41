@@ -5,6 +5,8 @@ body{
 .card{
     display: contents;
     margin: 30px;
+    width: 300px;
+    justify-content: center;
     
 }
 
@@ -20,4 +22,5 @@ body{
 .card-content{
     margin: 10px;
     text-align: justify;
+    float: left
 }
