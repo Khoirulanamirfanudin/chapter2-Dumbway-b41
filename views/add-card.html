@@ -7,30 +7,37 @@
     </head>
 
     <body>
-        <nav>
-            <div class="nav-left">
-                <ul>
-                    <li><a href="/"><img src="../public/img/logoo.png" /></a></li>
-                    <li><a href="/">Home</a></li>
-                    <li><a href="/addProject">addProject</a></li>
+        <div>
+            <nav class="navbar navbar-expand-lg navbar-light bg-light d-flex justify-content-between" >
+                <ul class="navbar-nav justify-content-lg-start" id="navbar-item-list">
+                  <a class="navbar-brand" href="/">
+                    <img src="./public/img/logoo.png" width="40" height="40" class="d-inline-block align-center" alt="">
+                    
+                  </a> 
+                  <li class="nav-item active">
+                    <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="/addProject">Add Project</a>
+                  </li>
                 </ul>
-            </div>
-            <div>
-                <div class="nav-right">
-                    {{if .Data.IsLogin}}
-                    <a href="" class="nav-link">Hello, {{.Data.UserName}}</a>
-                    <a href="/logout" class="nav-link list-active">Logout</a>
-                    {{else}}
-                    <a href="/form-register" class="nav-link">Register</a>
-                    <a href="/form-login" class="nav-link">Login</a>
-                    {{end}}
-                    <a href="/contact" class="contact">Contact</a>
+    
+                <div>
+                    <div class="nav-right">
+                        {{if .Data.IsLogin}}
+                        <a href="" class="nav-link">Hello, {{.Data.UserName}}</a>
+                        <a href="/logout" class="nav-link list-active">Logout</a>
+                        {{else}}
+                        <a href="/form-register" class="nav-link">Register</a>
+                        <a href="/form-login" class="nav-link">Login</a>
+                        {{end}}
+                        <a href="/contact" class="contact">Contact</a>
+                    </div>
                 </div>
-            </div>
-        </nav>
-        
+            </nav>
+        </div>
         <div class="addProject">
-            <form action="/addProject" method="POST" enctype="multipart/form-data">
+            <form action="/addProject" method="POST"  enctype="multipart/form-data">
                 <h1>ADD MY PROJECT</h1>
                 <div class="title">
                     <label for="input-title">Project Name</label>
@@ -53,11 +60,39 @@
                 </div>
                 <div class="technologies" id="technologies">
                     <label for="input-technologies">Technologies</label><br>
-                    <input type="checkbox" name="inputTechnologies"  value="Node JS"> Node JS
-                    <input type="checkbox" nama="inputTechnologies"  value="React JS"> React JS <br>  
-                    <input type="checkbox" nama="inputTechnologies"  value="Next JS"> Next JS
-                    <input type="checkbox" nama="inputTechnologies" value="python"> Python
                 </div>
+
+
+                <div class="input row m-3">
+                    <div class="col-md-4">
+                        <input class="form-check-input" type="checkbox" id="nodejs" name="nodejs" value="checked">
+                        <label class="form-check-label" for="node-js">
+                            Node JS
+                        </label>
+                    </div>
+                    <div class="col-md-4">
+                        <input class="form-check-input" type="checkbox" id="reactjs" name="reactjs" value="checked">
+                        <label class="form-check-label" for="reactjs">
+                            React JS
+                        </label>
+                    </div>
+                </div>
+                <div class="input row m-3">
+                    <div class="col-md-4">
+                        <input class="form-check-input" type="checkbox" id="nextjs" name="nextjs" value="checked">
+                        <label class="form-check-label" for="nextjs">
+                            Next JS
+                        </label>
+                    </div>
+                    <div class="col-md-4">
+                        <input class="form-check-input" type="checkbox" id="phyton" name="phyton"
+                            value="checked">
+                        <label class="form-check-label" for="phyton">
+                            Phyton
+                        </label>
+                    </div>
+                </div>
+
                 <div class="image">
                     <label for="input-image">Upload Image</label>
                     <input type="file" id="input-image" name="inputImage">

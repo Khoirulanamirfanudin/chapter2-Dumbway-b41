@@ -8,27 +8,35 @@
     </head>
 
     <body>
-        <nav>
-            <div class="nav-left">
-                <ul>
-                    <li><a href="/"><img src="../public/img/logoo.png" /></a></li>
-                    <li><a href="/">Home</a></li>
-                    <li><a href="/addProject">addProject</a></li>
+        <div>
+            <nav class="navbar navbar-expand-lg navbar-light bg-light d-flex justify-content-between" >
+                <ul class="navbar-nav justify-content-lg-start" id="navbar-item-list">
+                  <a class="navbar-brand" href="/">
+                    <img src="./public/img/logoo.png" width="40" height="40" class="d-inline-block align-center" alt="">
+                    
+                  </a> 
+                  <li class="nav-item active">
+                    <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="/addProject">Add Project</a>
+                  </li>
                 </ul>
-            </div>
-            <div>
-                <div class="nav-right">
-                    {{if .Data.IsLogin}}
-                    <a href="" class="nav-link">Hello, {{.Data.UserName}}</a>
-                    <a href="/logout" class="nav-link list-active">Logout</a>
-                    {{else}}
-                    <a href="/form-register" class="nav-link">Register</a>
-                    <a href="/form-login" class="nav-link">Login</a>
-                    {{end}}
-                    <a href="/contact" class="contact">Contact</a>
+    
+                <div>
+                    <div class="nav-right">
+                        {{if .Data.IsLogin}}
+                        <a href="" class="nav-link">Hello, {{.Data.UserName}}</a>
+                        <a href="/logout" class="nav-link list-active">Logout</a>
+                        {{else}}
+                        <a href="/form-register" class="nav-link">Register</a>
+                        <a href="/form-login" class="nav-link">Login</a>
+                        {{end}}
+                        <a href="/contact" class="contact">Contact</a>
+                    </div>
                 </div>
-            </div>
-        </nav>
+            </nav>
+        </div>
 
         <div class="addProject">
             <a href="/form-card" style="float: right; margin-top:10px; border-radius:20px; padding: 5px 15px; background-color:orangered">Add Project</a>
@@ -52,30 +60,38 @@
                 </div>
 
 
-                <div class="date">
+                <div class="date" name="inputDate">
                     <div>
                         <label for="input-start-date">Start Date : </label> 
-                        {{$data.Start_date}}
+                        {{$data.Format_Sdate}}
                     </div>
                     <div>
                         <label for="input-end-date">End Date : </label> 
-                        {{$data.End_date}}
+                        {{$data.Format_Edate}}
                     </div>
                 </div>
 
-
-                <div class="technologies" id="technologies">
-                    <label for="input-technologies">Technologies</label><br>
-                    <input type="checkbox" nama="teknologi 1"  value="Node JS"> Node JS
-                    <input type="checkbox" nama="teknologi 2"  value="React JS"> React JS <br>  
-                    <input type="checkbox" nama="teknologi 3"  value="Next JS"> Next JS
-                    <input type="checkbox" nama="teknologi 4"  value="python"> Python
+                <div>
+                    Duration : {{$data.Duration}}
                 </div>
-
-               
 
                 <div class="input-message">
                     <p>{{$data.Description}}</p>
+                </div>
+
+                <div>
+                    {{if eq (index $data.Technologies 0) "checked"}}
+                    <img src="../public/img/node.jpg" alt="nodejs" style="height: 30px; width:30px ;" >
+                    {{end}}
+                    {{if eq (index $data.Technologies 1) "checked"}}
+                    <img src="../public/img/reactjs.jpg" alt="reactjs" style="height: 30px; width:30px ;" >
+                    {{end}}
+                    {{if eq (index $data.Technologies 2) "checked"}}
+                    <img src="../public/img/nextjs.jpg" alt="nextjs"  style="height: 30px; width:30px" >
+                    {{end}}
+                    {{if eq (index $data.Technologies 3) "checked"}}
+                    <img src="../public/img/phyton.jpg" alt="typescript" style="height: 30px; width:30px" >
+                    {{end}}
                 </div>
 
             

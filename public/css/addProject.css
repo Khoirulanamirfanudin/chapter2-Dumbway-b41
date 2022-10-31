@@ -71,6 +71,7 @@ h1{
 
 
 .card-list{
+  
     display: flex;
     align-items: auto;
     flex-direction: row;
