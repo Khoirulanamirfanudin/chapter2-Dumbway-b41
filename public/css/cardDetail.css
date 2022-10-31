@@ -5,16 +5,12 @@ body{
 .card{
     display: contents;
     margin: 30px;
+    justify-content: center;
     
 }
 
-.card-image{
-    width: 100%;
-}
-
 .card img {
-    width:auto;
-    height: 300px;
+    width: 400px;
 }
 
 .card-content{
